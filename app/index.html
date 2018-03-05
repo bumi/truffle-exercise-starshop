@@ -29,8 +29,9 @@
     function init() {
       console.log('loading contract data');
       console.log('network id', window.networkId);
-      $.getJSON('/build/contracts/StarShopPremium.json', function(data) {
-        window.shop = new web3js.eth.Contract(data.abi, window.contractAddress);
+      $.getJSON('/build/contracts/StarShopPremium.json?' + (new Date()).getTime(), function(data) {
+        console.log('contract address: ', data.networks[window.networkId].address);
+        window.shop = new web3js.eth.Contract(data.abi, data.networks[window.networkId].address);
         window.shop.methods.owner().call().then(function(ownerAddress) { 
           console.log('shop owner:', ownerAddress);
         });
@@ -54,9 +55,10 @@
 
     function buy() {
       var result = web3js.eth.sendTransaction({from: web3.eth.defaultAccount, to: window.shop.options.address, value: window.membershipPrice }).on('confirmation', function(confirmationNumber, receipt) {
-        console.log(confirmationNumber);
-        updateStatus(window.account);
-        console.log('transaction confirmed');
+        console.log('transaction confirmaton:', confirmationNumber);
+        //if(confirmationNumber == 1) {
+          updateStatus(window.account);
+        //}
       });
     }
 
@@ -75,7 +77,10 @@
       if (typeof web3 !== 'undefined') {
         web3js = new Web3(web3.currentProvider);
         window.account = web3.eth.defaultAccount;
-        init();
+        web3.version.getNetwork(function(err, version) {
+          window.networkId = version;
+          init();
+        });
       } else {
         alert('no unlocked web3 provider found');
       }
