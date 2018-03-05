@@ -7,7 +7,8 @@ import './owned.sol';
 contract StarShopPremium is owned{
   uint public priceDiscount; // 5 = 5%
   uint public loyaltyBoost;  // 5 = 5%
-  
+ 
+  uint public price = 100 finney;
   mapping (address  => uint ) payments;
   
   function StarShopPremium() public {
@@ -16,7 +17,7 @@ contract StarShopPremium is owned{
   }
 
   function () public payable {
-    require(msg.value == 100 finney);
+    require(msg.value == price);
     payments[msg.sender] = now;
   }
 

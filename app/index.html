@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   
+    <script src="jquery.min.js"></script>
+    <script src="web3.min.js"></script>
+
+    <title>StarShopPremium</title>
+  </head>
+  <body>
+    <h1>StarShopPremium</h1>
+    <p>
+      Membership price: <span id="price"></span> ETH
+    </p>
+    <p>
+      <button id="join">Become a member</button>
+    </p>
+    <p>
+      <input type="text" id="account" /> <span id="account_status"></span>
+    </p>
+
+  </body>
+
+  <script>
+    window.contractAddress = '0x8b4ef0714cea520079675dd4df0f6c6c6d450d04';
+    function init() {
+      console.log('loading contract data');
+      console.log('network id', window.networkId);
+      $.getJSON('/build/contracts/StarShopPremium.json', function(data) {
+        window.shop = new web3js.eth.Contract(data.abi, window.contractAddress);
+        window.shop.methods.owner().call().then(function(ownerAddress) { 
+          console.log('shop owner:', ownerAddress);
+        });
+        $('#account').val(window.account);
+        updateStatus(window.account);
+      
+        window.shop.methods.price().call().then(function(price) {
+          window.membershipPrice = price;
+          $('#price').html(web3js.utils.fromWei(price));
+          $('#join').click(buy);
+        }); 
+      });
+
+      $('#account').keyup(function() {
+        var account = $('#account').val();
+        if(web3js.utils.isAddress(account)) {
+          updateStatus(account);
+        }
+      });
+    }
+
+    function buy() {
+      var result = web3js.eth.sendTransaction({from: web3.eth.defaultAccount, to: window.shop.options.address, value: window.membershipPrice }).on('confirmation', function(confirmationNumber, receipt) {
+        console.log(confirmationNumber);
+        updateStatus(window.account);
+        console.log('transaction confirmed');
+      });
+    }
+
+    function updateStatus(account) {
+      console.log('checking status for: ', account);
+      window.shop.methods.isPremium(account).call().then(function(isPremium) {
+        if(isPremium) {
+          $('#account_status').html('is a premium member');
+        } else {
+          $('#account_status').html('is NOT a premium member');
+        }
+      })
+    }
+
+    window.addEventListener('load', function() {
+      if (typeof web3 !== 'undefined') {
+        web3js = new Web3(web3.currentProvider);
+        window.account = web3.eth.defaultAccount;
+        init();
+      } else {
+        alert('no unlocked web3 provider found');
+      }
+    });
+  </script>
+</html>
+
