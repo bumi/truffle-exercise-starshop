@@ -4,87 +4,47 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-   
+  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
     <script src="jquery.min.js"></script>
     <script src="web3.min.js"></script>
 
     <title>StarShopPremium</title>
   </head>
   <body>
-    <h1>StarShopPremium</h1>
-    <p>
-      Membership price: <span id="price"></span> ETH
-    </p>
-    <p>
-      <button id="join">Become a member</button>
-    </p>
-    <p>
-      <input type="text" id="account" /> <span id="account_status"></span>
-    </p>
+    <div class="container">
+      <div class="jumbotron">
+        <div class="alert alert-danger" style="display:none" id="login-notice">Please unlock your Ethereum account.</div>
+        <figure class="figure" style="float:right">
+          <img src="counter.jpg" class="figure-img img-fluid rounded"/>
+          <figcaption class="figure-caption" id="owner"></figcaption>
+        </figure>
+        <h1 class="display-4">StarShopPremium</h1>
+        <p class="lead">StarShop is valuing its premium customers.</p>
+        <hr class="my-4">
+        <p>Be Special. Be Premium. For only <span id="price"></span>ETH</p>
+        <p class="lead">
+          <a class="btn btn-primary btn-lg" href="#" id="join" role="button">Become a member</a>
+        </p>
+       
+        <div class="clearfix"></div>
+        <form>
+          <div class="form-group">
+            <h3>Check your Status</h3>
+            <label for="account">Account address</label>
+            <input type="text" id="account" class="form-control"/> 
+          </div>
+          <button type="submit" id="check-status" class="btn btn-primary">Check</button>
+        </form>
+
+        <div class="alert alert-success" role="alert" id="account_status">
+          Thanks for being premium
+        </div>
+      </div>
+      </div>
 
   </body>
 
-  <script>
-    window.contractAddress = '0x8b4ef0714cea520079675dd4df0f6c6c6d450d04';
-    function init() {
-      console.log('loading contract data');
-      console.log('network id', window.networkId);
-      $.getJSON('/build/contracts/StarShopPremium.json?' + (new Date()).getTime(), function(data) {
-        console.log('contract address: ', data.networks[window.networkId].address);
-        window.shop = new web3js.eth.Contract(data.abi, data.networks[window.networkId].address);
-        window.shop.methods.owner().call().then(function(ownerAddress) { 
-          console.log('shop owner:', ownerAddress);
-        });
-        $('#account').val(window.account);
-        updateStatus(window.account);
-      
-        window.shop.methods.price().call().then(function(price) {
-          window.membershipPrice = price;
-          $('#price').html(web3js.utils.fromWei(price));
-          $('#join').click(buy);
-        }); 
-      });
-
-      $('#account').keyup(function() {
-        var account = $('#account').val();
-        if(web3js.utils.isAddress(account)) {
-          updateStatus(account);
-        }
-      });
-    }
-
-    function buy() {
-      var result = web3js.eth.sendTransaction({from: web3.eth.defaultAccount, to: window.shop.options.address, value: window.membershipPrice }).on('confirmation', function(confirmationNumber, receipt) {
-        console.log('transaction confirmaton:', confirmationNumber);
-        //if(confirmationNumber == 1) {
-          updateStatus(window.account);
-        //}
-      });
-    }
-
-    function updateStatus(account) {
-      console.log('checking status for: ', account);
-      window.shop.methods.isPremium(account).call().then(function(isPremium) {
-        if(isPremium) {
-          $('#account_status').html('is a premium member');
-        } else {
-          $('#account_status').html('is NOT a premium member');
-        }
-      })
-    }
-
-    window.addEventListener('load', function() {
-      if (typeof web3 !== 'undefined') {
-        web3js = new Web3(web3.currentProvider);
-        window.account = web3.eth.defaultAccount;
-        web3.version.getNetwork(function(err, version) {
-          window.networkId = version;
-          init();
-        });
-      } else {
-        alert('no unlocked web3 provider found');
-      }
-    });
-  </script>
+  <script src="app.js"></script>
 </html>
 
