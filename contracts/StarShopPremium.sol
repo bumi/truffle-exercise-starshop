@@ -8,12 +8,13 @@ contract StarShopPremium is owned{
   uint public priceDiscount; // 5 = 5%
   uint public loyaltyBoost;  // 5 = 5%
  
-  uint public price = 100 finney;
+  uint256 public price;
   mapping (address  => uint ) payments;
   
   function StarShopPremium() public {
     priceDiscount = 5;
     loyaltyBoost = 5;
+    price = 100 finney; 
   }
 
   function () public payable {

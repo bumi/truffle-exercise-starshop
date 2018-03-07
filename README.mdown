@@ -1,0 +1,29 @@
+## StarShipPremium dApp
+
+### ToDos: 
+
+#### Create a truffle migration for the StarShopPremium contract
+
+* Use the truffle create command to create the migration file
+* http://truffleframework.com/docs/getting_started/migrations
+
+
+#### Write a JavaScript test for the StarShopPremium contract
+
+* Use the truffle create command to create the test file
+* Write a test that checks the owner of the contract
+* Write a test that a payment with the correct amount is accepted
+* http://truffleframework.com/docs/getting_started/javascript-tests
+* https://mochajs.org/
+* http://chaijs.com/
+
+
+#### Write a UI for the Shop
+
+* Have a look at the template in ./app: 
+   - index.html: the template containing placeholders for data that needs to be loaded from Ethereum
+   - app.js: JS to interact with the smart contract through web3.js
+* Fill the missing parts in the ./app/app.js 
+* web3js documentation: https://web3js.readthedocs.io/
+
+
