@@ -1,5 +1,7 @@
 ## StarShopPremium dApp
 
+You can use `python2 -m SimpleHTTPServer 8000` (`python -m http.server 8000` with python 3) to serve the app on `http://localhost:8000`  
+
 ### ToDos: 
 
 #### Create a truffle migration for the StarShopPremium contract
