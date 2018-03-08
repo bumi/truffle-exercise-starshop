@@ -26,6 +26,6 @@ You can use `python2 -m SimpleHTTPServer 8000` (`python -m http.server 8000` wit
    - index.html: the template containing placeholders for data that needs to be loaded from Ethereum
    - app.js: JS to interact with the smart contract through web3.js
 * Fill the missing parts in the ./app/app.js 
-* web3js documentation: https://web3js.readthedocs.io/
+* web3js documentation: http://web3js.readthedocs.io/en/1.0/
 
 
